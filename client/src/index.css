@@ -1,0 +1,203 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import "tailwindcss";
+
+
+@layer base {
+
+    html {
+        font-family: "Space Mono", monospace;
+    }
+
+    @media (max-width: 1400px) {
+        html {
+            font-size: 14px;
+        }
+    }
+
+    
+
+    @media (max-width: 600px) {
+        html {
+            font-size: 12px;
+        }
+    }
+
+    body {
+        /* background-color: var(--color-neutral-silver); */
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+        height: 100%;
+        -webkit-overflow-scrolling: touch;
+        overflow-x: hidden;
+        overflow-y: hidden;
+        width: 100%;
+    }
+
+    body img {
+        -webkit-user-select: none;
+        -moz-user-select: none;   
+        -ms-user-select: none;    
+        user-select: none;         
+        -webkit-user-drag: none;   
+        pointer-events: none; 
+    }
+
+    * {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+        -webkit-tap-highlight-color: transparent;
+        scroll-behavior: smooth;
+    }
+
+    button {
+        -webkit-user-select: none; 
+        -moz-user-select: none; 
+        -ms-user-select: none;    
+        user-select: none;        
+    }
+}
+
+@layer components {
+
+    .overflow-hidden {
+        overflow: hidden;
+    }
+
+    .bg-mask-20, .bg-mask-40, .bg-mask-60, .bg-mask-80 {
+        position: relative;
+        overflow: hidden;
+    }
+    .bg-mask-20::before, .bg-mask-40::before, .bg-mask-60::before, .bg-mask-80::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+    }
+    .bg-mask-20::before {background-color: rgba(0, 0, 0, 0.20);}
+    .bg-mask-40::before {background-color: rgba(0, 0, 0, 0.40);}
+    .bg-mask-60::before {background-color: rgba(0, 0, 0, 0.60);}
+    .bg-mask-80::before {background-color: rgba(0, 0, 0, 0.80);}
+    .bg-mask-20 > *, .bg-mask-40 > *, .bg-mask-60 > *, .bg-mask-80 > * {
+        position: relative;
+        z-index: 10;
+    }
+
+
+}
+
+.menu-theme {
+    /* @apply bg-[#ffffff37] border border-gray-600 rounded-lg backdrop-blur-lg";
+*/
+    background-color: rgba(255, 255, 255, 0.37);
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    border-radius: 0.5rem;
+    backdrop-filter: blur(0.5rem);
+}
+
+@custom-variant hocus {
+    &:active {
+        @slot;
+    }
+    @media (hover: hover) and (pointer: fine) {
+        &:hover,
+        &:active {
+            @slot;
+        }
+    }
+}
+
+/*----- flex -----*/
+
+@utility cols {@apply flex flex-col}
+@utility cols-start {@apply flex flex-col justify-start}
+@utility cols-center {@apply flex flex-col justify-center}
+@utility cols-end {@apply flex flex-col justify-end}
+@utility cols-between {@apply flex flex-col justify-between}
+@utility cols-around {@apply flex flex-col justify-around}
+@utility cols-evenly {@apply flex flex-col justify-evenly}
+
+@utility rows {@apply flex flex-row}
+@utility rows-start {@apply flex flex-row justify-start}
+@utility rows-center {@apply flex flex-row justify-center}
+@utility rows-end {@apply flex flex-row justify-end}
+@utility rows-between {@apply flex flex-row justify-between}
+@utility rows-around {@apply flex flex-row justify-around}
+@utility rows-evenly {@apply flex flex-row justify-evenly}
+
+
+
+
+@utility cols-reverse {@apply flex flex-col-reverse}
+@utility cols-start-reverse {@apply flex flex-col-reverse justify-start}
+@utility cols-center-reverse {@apply flex flex-col-reverse justify-center}
+@utility cols-end-reverse {@apply flex flex-col-reverse justify-end}
+@utility cols-between-reverse {@apply flex flex-col-reverse justify-between}
+@utility cols-around-reverse {@apply flex flex-col-reverse justify-around}
+@utility cols-evenly-reverse {@apply flex flex-col-reverse justify-evenly}
+
+@utility rows-reverse {@apply flex flex-row-reverse}
+@utility rows-start-reverse {@apply flex flex-row-reverse justify-start}
+@utility rows-center-reverse {@apply flex flex-row-reverse justify-center}
+@utility rows-end-reverse {@apply flex flex-row-reverse justify-end}
+@utility rows-between-reverse {@apply flex flex-row-reverse justify-between}
+@utility rows-around-reverse {@apply flex flex-row-reverse justify-around}
+@utility rows-evenly-reverse {@apply flex flex-row-reverse justify-evenly}
+
+
+
+
+
+@utility axis-start {@apply items-start}
+@utility axis-center {@apply items-center}
+@utility axis-end {@apply  items-end}
+
+@utility center {@apply flex justify-center items-center}
+
+@utility transition-100 {
+    transition: all 100ms ease-in-out;
+}
+
+@utility transition-200 {
+    transition: all 200ms ease-in-out;
+}
+
+@utility transition-300 {
+    transition: all 300ms ease-in-out;
+}
+
+@utility transition-500 {
+    transition: all 500ms ease-in-out;
+}
+
+@utility transition-700 {
+    transition: all 700ms ease-in-out;
+}
+
+@utility fady-bouncy {
+    @apply hover:opacity-90 active:scale-105;
+}
+
+@utility text-unselectable {
+    -webkit-user-select: none; 
+    -moz-user-select: none;    
+    -ms-user-select: none; 
+    user-select: none;  
+}
+
+hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+@utility hide-scrollbar {
+    scrollbar-width: none;
+}
+
+@utility hide-scrollbar {
+    -ms-overflow-style: none;
+}
+
+@utility scrollbar-stable {
+    scrollbar-gutter: 'stable';
+}
