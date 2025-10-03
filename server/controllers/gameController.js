@@ -1,6 +1,7 @@
 const GameProgress = require('../models/GameProgress');
 const User = require('../models/User');
 const { getLevelById, getAllLevels } = require('../utils/gameLevels');
+const { validateDesign, validateDesignEnhanced } = require('../utils/validation');
 const { 
   getAvailableComponentsForLevel, 
   getComponentById, 
@@ -466,12 +467,12 @@ const getComponentLibrary = async (req, res, next) => {
   }
 };
 
-// @desc    Validate habitat design with simplified scoring
+// @desc    Validate habitat design with NASA standards (progressive complexity)
 // @route   POST /api/game/validate-design
 // @access  Private
-const validateDesign = async (req, res, next) => {
+const validateGameDesign = async (req, res, next) => {
   try {
-    const { components, habitatShape, crewSize, level } = req.body;
+    const { components, habitatShape, crewSize, level, habitat } = req.body;
 
     if (!components || !habitatShape || !crewSize || !level) {
       return res.status(400).json({
@@ -488,16 +489,123 @@ const validateDesign = async (req, res, next) => {
       });
     }
 
-    // Simple validation
-    const validation = await simpleScoring(components, habitatShape, crewSize, levelData);
+    // Create design object for NASA validation
+    const designForValidation = {
+      habitat: habitat || {
+        shape: habitatShape,
+        volume: calculateHabitatVolume(habitatShape, { length: 20, radius: 5, height: 10 })
+      },
+      components: components.map(comp => ({
+        ...comp,
+        volume: comp.volume || getDefaultComponentVolume(comp.type)
+      })),
+      crewSize: crewSize,
+      missionDuration: levelData.missionDuration || 30,
+      destination: levelData.destination || 'space_station'
+    };
+
+    // Use enhanced validation for advanced levels (7+)
+    const validationMethod = level >= 7 ? validateDesignEnhanced : validateDesign;
+    const validation = validationMethod(designForValidation);
+
+    // Add level-specific scoring
+    const levelScore = calculateLevelScore(validation, levelData, components.length);
+
+    // Educational feedback based on level
+    const educationalFeedback = generateEducationalFeedback(validation, level, levelData);
 
     res.status(200).json({
       success: true,
-      validation: validation
+      validation: {
+        ...validation,
+        levelScore,
+        levelCompleted: levelScore >= levelData.scoreTarget,
+        nasa_standard: level >= 7 ? 'Enhanced NHV Standards' : 'Basic NASA Table 17',
+        educational_feedback: educationalFeedback
+      }
     });
   } catch (error) {
     next(error);
   }
+};
+
+// Helper function to calculate habitat volume
+const calculateHabitatVolume = (shape, dimensions) => {
+  switch (shape) {
+    case 'cylinder':
+      return Math.PI * Math.pow(dimensions.radius || 5, 2) * (dimensions.length || 20);
+    case 'sphere':
+      return (4/3) * Math.PI * Math.pow(dimensions.radius || 5, 3);
+    case 'dome':
+      return (2/3) * Math.PI * Math.pow(dimensions.radius || 5, 3);
+    default:
+      return 100; // Default volume
+  }
+};
+
+// Helper function to get default component volumes based on NASA standards
+const getDefaultComponentVolume = (componentType) => {
+  const volumes = {
+    'LIFE_SUPPORT': 10.0,
+    'PRIVATE_HABITATION': 31.36,
+    'HYGIENE': 4.35,
+    'WASTE_MANAGEMENT': 3.76,
+    'MEAL_PREPARATION': 4.35,
+    'EXERCISE': 18.20,
+    'UTILIZATION_RESEARCH': 10.25,
+    'MEDICAL_STORAGE': 5.90,
+    'MISSION_PLANNING': 3.42
+  };
+  return volumes[componentType] || 5.0;
+};
+
+// Helper function to calculate level-specific score
+const calculateLevelScore = (validation, levelData, componentCount) => {
+  let score = validation.score;
+  
+  // Bonus for meeting level objectives
+  if (validation.isValid) {
+    score += 100; // Completion bonus
+  }
+  
+  // Bonus for component efficiency
+  if (componentCount >= levelData.requiredComponents.length) {
+    score += 50; // Component requirement bonus
+  }
+  
+  return Math.min(1000, score);
+};
+
+// Helper function to generate educational feedback
+const generateEducationalFeedback = (validation, level, levelData) => {
+  const feedback = [];
+  
+  if (level <= 3) {
+    feedback.push('Focus on basic NASA volume requirements and component placement.');
+  } else if (level <= 6) {
+    feedback.push('Consider NASA safety protocols and component adjacency rules.');
+  } else {
+    feedback.push('Advanced NASA standards: System redundancy and long-duration mission requirements.');
+  }
+  
+  if (validation.nasaCompliance) {
+    if (!validation.nasaCompliance.nhvCompliant) {
+      feedback.push('⚠️ Net Habitable Volume insufficient for mission duration and crew size.');
+    }
+    if (validation.nasaCompliance.redundancyScore < 80) {
+      feedback.push('⚠️ Consider adding backup systems for critical functions.');
+    }
+  }
+  
+  if (validation.errors.length > 0) {
+    feedback.push(`❌ ${validation.errors.length} NASA standard violations found.`);
+  }
+  
+  if (validation.warnings.length > 0) {
+    feedback.push(`⚠️ ${validation.warnings.length} recommendations for improvement.`);
+  }
+  
+  return feedback;
 };
 
 // @desc    Get 3D model data for components
@@ -659,10 +767,10 @@ module.exports = {
   updateProgress,
   getLeaderboard,
   getUserRank,
-  // New simplified game methods
+  // NASA-enhanced game methods
   getAllLevelsInfo,
   getComponentLibrary,
-  validateDesign,
+  validateDesign: validateGameDesign, // NASA-compliant validation
   getModel3D,
   simpleScoring
 };

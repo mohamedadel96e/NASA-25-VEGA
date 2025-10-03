@@ -1,5 +1,5 @@
 const Design = require('../models/Design');
-const { validateDesign } = require('../utils/validation');
+const { validateDesign, validateDesignEnhanced } = require('../utils/validation');
 
 const getDesigns = async (req, res, next) => {
   try {
@@ -326,6 +326,8 @@ const deleteDesign = async (req, res, next) => {
 
 const validateDesignEndpoint = async (req, res, next) => {
   try {
+    const { enhanced = false } = req.query; // Allow enhanced validation via query parameter
+    
     const design = await Design.findOne({
       _id: req.params.id,
       $or: [
@@ -341,21 +343,42 @@ const validateDesignEndpoint = async (req, res, next) => {
       });
     }
 
-    // Run validation
-    const validationResult = validateDesign(design);
+    // Run validation (enhanced or standard)
+    const validationResult = enhanced === 'true' ? 
+      validateDesignEnhanced(design) : 
+      validateDesign(design);
 
     // Update design with validation results
     design.validation = {
       ...validationResult,
-      lastValidated: new Date()
+      lastValidated: new Date(),
+      validationType: enhanced === 'true' ? 'NASA_Enhanced_NHV' : 'NASA_Standard'
     };
 
     await design.save();
 
     res.status(200).json({
       success: true,
-      message: 'Design validated successfully',
-      validation: design.validation
+      message: `Design validated successfully using ${enhanced === 'true' ? 'Enhanced NASA NHV Standards' : 'Standard NASA Validation'}`,
+      validation: design.validation,
+      nasa_info: enhanced === 'true' ? {
+        standard: 'NASA Technical Report 20200002973',
+        description: 'Net Habitable Volume for Long-Duration Exploration Missions',
+        features: [
+          'Mission-specific volume requirements',
+          'Crew psychological factors',
+          'System redundancy validation',
+          'Accessibility standards compliance'
+        ]
+      } : {
+        standard: 'NASA Table 17',
+        description: 'Minimum Habitable Volumes',
+        features: [
+          'Basic volume requirements',
+          'Component validation',
+          'Safety checks'
+        ]
+      }
     });
   } catch (error) {
     next(error);
