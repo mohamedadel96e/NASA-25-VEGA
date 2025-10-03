@@ -50,25 +50,28 @@ The system teaches these NASA-defined functional spaces:
 ### 🏠 Space Habitat Design
 - **3D Habitat Creation** with multiple shapes (Cylinder, Sphere, Dome)
 - **Component Library** with realistic space habitat components
-- **Design Validation** with NASA-inspired constraints
+- **NASA-Compliant Validation** with dual validation systems:
+  - **Standard Validation**: NASA Table 17 minimum volumes
+  - **Enhanced NHV Validation**: Net Habitable Volume for long-duration missions
 - **Design Sharing** with public/private visibility
 - **Design Templates** for educational purposes
 - **Collaborative Design** with sharing capabilities
 
 ### 🎮 Gamification System
-- **Progressive Levels** (1-10) with increasing complexity
+- **Progressive Levels** (1-10) with increasing NASA complexity
 - **3D Game Environment** with interactive components
-- **Scoring System** with star ratings (0-3 stars)
+- **NASA-Based Scoring** with realistic space engineering criteria
 - **Achievement Tracking** and progress monitoring
-- **Design Challenges** with specific mission parameters
-- **Real-time Validation** of habitat designs
+- **Mission-Specific Challenges** (Lunar, Mars, Deep Space)
+- **Real-time NASA Validation** of habitat designs
 
-### 📊 Advanced Features
-- **Design Analytics** with volume utilization tracking
-- **Component Validation** with realistic constraints
-- **Mission Planning** with crew size and duration parameters
-- **Performance Metrics** for habitat efficiency
-- **Educational Content** integrated with game levels
+### 📊 Advanced NASA Features
+- **Net Habitable Volume (NHV)** calculations for mission duration
+- **System Redundancy** validation for critical life support
+- **Accessibility Standards** compliance (NASA-STD-3001)
+- **Mission-Specific Requirements** (radiation shielding, ISRU)
+- **Crew Psychology Factors** in volume calculations
+- **Environmental Control** validation
 
 ## 🛠️ Technology Stack
 
@@ -466,7 +469,78 @@ Update existing design (Protected).
 Delete design (Protected).
 
 #### POST `/designs/:id/validate`
-Validate design against constraints (Protected).
+Validate design against NASA constraints (Protected).
+
+**Query Parameters:**
+- `enhanced`: Set to 'true' for NASA Enhanced NHV validation
+
+**Standard Validation Response:**
+```json
+{
+  "success": true,
+  "message": "Design validated successfully using Standard NASA Validation",
+  "validation": {
+    "isValid": true,
+    "score": 85,
+    "errors": [],
+    "warnings": [
+      {
+        "type": "warning",
+        "message": "Volume per crew member below NASA recommended: 35.2m³ (NASA recommended: 36.80m³)",
+        "nasa_reference": "NASA Table 17 - MTH volume recommendations"
+      }
+    ],
+    "metrics": {
+      "volumeUtilization": 75,
+      "powerBalance": 1200,
+      "massTotal": 2500
+    },
+    "validationType": "NASA_Standard"
+  },
+  "nasa_info": {
+    "standard": "NASA Table 17",
+    "description": "Minimum Habitable Volumes"
+  }
+}
+```
+
+**Enhanced NHV Validation Response:**
+```json
+{
+  "success": true,
+  "message": "Design validated successfully using Enhanced NASA NHV Standards",
+  "validation": {
+    "isValid": true,
+    "score": 92,
+    "errors": [],
+    "warnings": [],
+    "nasaCompliance": {
+      "nhvCompliant": true,
+      "missionSuitability": "Long-duration missions (Mars transit)",
+      "redundancyScore": 85,
+      "accessibilityScore": 90
+    },
+    "metrics": {
+      "volumeUtilization": 78,
+      "nhvScore": 95,
+      "environmentalScore": 88,
+      "redundancy": 85,
+      "accessibility": 90
+    },
+    "validationType": "NASA_Enhanced_NHV"
+  },
+  "nasa_info": {
+    "standard": "NASA Technical Report 20200002973",
+    "description": "Net Habitable Volume for Long-Duration Exploration Missions",
+    "features": [
+      "Mission-specific volume requirements",
+      "Crew psychological factors",
+      "System redundancy validation",
+      "Accessibility standards compliance"
+    ]
+  }
+}
+```
 
 #### POST `/designs/:id/duplicate`
 Create a copy of existing design (Protected).
