@@ -88,10 +88,8 @@
 }
 
 .menu-theme {
-    /* @apply bg-[#ffffff37] border border-gray-600 rounded-lg backdrop-blur-lg";
-*/
-    background-color: rgba(255, 255, 255, 0.37);
-    border: 1px solid rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(127, 127, 127, 0.3);
     border-radius: 0.5rem;
     backdrop-filter: blur(0.5rem);
 }
