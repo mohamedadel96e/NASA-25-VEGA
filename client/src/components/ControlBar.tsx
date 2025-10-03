@@ -1,38 +1,49 @@
-import { Hand, MousePointer2, Pen, Plus, Settings } from "lucide-react";
-import * as THREE from 'three';
-import type { ControlMode } from "../types/ControlMode";
-import CursorBox from "../sdk/CursorBox";
-import PositionDisplay from "../sdk/PositionDisplay";
+import { Hand, MousePointer2, Plus, Settings } from "lucide-react";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { CursorPosition, Mode, modelsArgs, selectedModel } from "../atoms";
+import { useEffect } from "react";
+import type { ModelArgs } from "../types/ModelArgs";
 
 
-type ControlBarProps = {
-    cursorPosition: THREE.Vector3;
-    setCursorPosition: (position: THREE.Vector3) => void;
-    mode: ControlMode;
-    setMode: (mode: ControlMode) => void;
-}
+export default function ControlBar() {
 
+    const [mode, setMode] = useAtom(Mode);
+    const [models, setModels] = useAtom(modelsArgs);
+    const selected = useAtomValue(selectedModel);
 
-export default function ControlBar(props: ControlBarProps) {
+    const setSelectedModel = useSetAtom(selectedModel);
 
-    const { cursorPosition, setCursorPosition, mode, setMode } = props;
+    useEffect(() => {
+        if(mode === "hand") setSelectedModel(null);
+    }, [mode]);
     
     return <>
-         <div className="absolute z-30 bottom-3 rows gap-2 axis-center">
+         <div
+            className="absolute z-30 bottom-3 rows gap-2 axis-center"
+        >
             <p className="text-white font-bold w-20 text-right">
                 {mode.toUpperCase()}
             </p>
             <div className="w-fit px-5 py-3 center gap-5 text-gray-300 menu-theme">
                 <Hand
-                    className="cursor-pointer w-6 h-auto hocus:text-white hocus:scale-125 transition-300"
+                    className={`
+                        w-6 h-auto transition-300
+                        ${mode === "hand" ? "text-white scale-125" : "cursor-pointer hocus:text-white"}
+                    `}
                     onClick={() => setMode("hand")}
                 />
                 <Plus
-                    className="cursor-pointer w-6 h-auto hocus:text-white hocus:scale-125 transition-300"
+                    className={`
+                        w-6 h-auto transition-300
+                        ${mode === "add" ? "text-white scale-125" : "cursor-pointer hocus:text-white"}
+                    `}
                     onClick={() => setMode("add")}
                 />
                 <MousePointer2
-                    className="cursor-pointer w-6 h-auto hocus:text-white hocus:scale-125 transition-300"
+                    className={`
+                        w-6 h-auto transition-300
+                        ${mode === "select" ? "text-white scale-125" : "cursor-pointer hocus:text-white"}
+                    `}
                     onClick={() => setMode("select")}
                 />
             </div>

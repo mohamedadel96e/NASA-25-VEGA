@@ -1,6 +1,7 @@
 
 
 export type ModelArgs = {
+    id?: string,
     name: string,
     src: string,
     position: [number,number,number],
