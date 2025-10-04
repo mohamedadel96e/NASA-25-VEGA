@@ -43,10 +43,9 @@ export default function ModelViewer(props: ModelProps) {
 	} = props;
 
 
-	return (
-		<div
-			className={className}
-		>
+	return <div
+		className={className}
+	>
 
 			<Canvas camera={{ position: position, fov: fov, rotation: rotation }}>
 				<Suspense fallback={<Html center><Loading /></Html>}>
@@ -58,6 +57,5 @@ export default function ModelViewer(props: ModelProps) {
 				{ orbitControls && <OrbitControls makeDefault={false} enableZoom={enableZoom} enableRotate={enableRotate} enablePan={enablePan} /> }
 			</Canvas>
 
-		</div>
-	);
+	</div>
 }

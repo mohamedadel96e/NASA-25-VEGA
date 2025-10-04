@@ -37,25 +37,23 @@ export default function GLBLoader(props: ModelProps) {
 
     const { scene } = useGLTF(src);
 
-    return (
-        <primitive
-            object={scene}
-            rotation={rotation}
-            position={position}
-            scale={scale}
-            ref={ref}
-        >
-            {/* {label && (
-                <Html
-                    position={[0, 0, 0]}
-                    center 
-                    className="text-white text-unselectable menu-theme px-2 py-1"
-                >
-                    <div className="label">
-                        {label}
-                    </div>
-                </Html>
-            )} */}
-        </primitive>
-    );
+    return <primitive
+        object={scene}
+        rotation={rotation}
+        position={position}
+        scale={scale}
+        ref={ref}
+    >
+        {/* {label && (
+            <Html
+                position={[0, 0, 0]}
+                center 
+                className="text-white text-unselectable menu-theme px-2 py-1"
+            >
+                <div className="label">
+                    {label}
+                </div>
+            </Html>
+        )} */}
+    </primitive>
 }

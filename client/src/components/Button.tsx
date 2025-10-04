@@ -21,8 +21,6 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 }
 
 
-
-
 export default function Button(props: ButtonProps) {
 
     const { onClick, className, varient, muted = false, ...rest } = props;

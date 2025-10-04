@@ -67,7 +67,7 @@ export default function PlayGround() {
                 maxZoom={20}
                 minDistance={1}
                 maxDistance={50}
-                enablePan={false}
+                // enablePan={false}
             />
             <Plane
                 texture="/textures/mars-square-no-ice.png"
