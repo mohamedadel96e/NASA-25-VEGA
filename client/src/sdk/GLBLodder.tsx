@@ -2,6 +2,8 @@ import { useGLTF, Html } from '@react-three/drei';
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useAtom } from 'jotai';
+import { HideLabels } from '../atoms';
 
 type ModelProps = {
     src: string;
@@ -9,7 +11,7 @@ type ModelProps = {
     position?: [number, number, number];
     scale?: number;
     autoRotateSpeed?: [number, number, number];
-    label?: string; // Changed to a single, optional string
+    label?: string;
 }
 
 export default function GLBLoader(props: ModelProps) {
@@ -23,6 +25,8 @@ export default function GLBLoader(props: ModelProps) {
     } = props;
 
     const ref = useRef<THREE.Group>(null);
+
+    const hideLables = useAtom(HideLabels);
     
     useFrame((_, delta) => {
         if (!ref.current || !autoRotateSpeed) return;
@@ -43,7 +47,7 @@ export default function GLBLoader(props: ModelProps) {
         >
             {/* {label && (
                 <Html
-                    position={[0, 0, 0]} 
+                    position={[0, 0, 0]}
                     center 
                     className="text-white text-unselectable menu-theme px-2 py-1"
                 >

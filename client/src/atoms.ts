@@ -8,6 +8,7 @@ export const backgroundMusicVolume = atom<number>(0.5);
 export const soundEffects = atom<boolean>(true);
 export const modelsArgs = atom<ModelArgs[]>([]);
 export const Mode = atom<ControlMode>("hand");
+export const HideLabels = atom<boolean>(false);
 
 export const selectedModel = atom<ModelArgs | null>(null);
 

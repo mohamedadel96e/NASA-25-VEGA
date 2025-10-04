@@ -21,15 +21,15 @@ export default function MainMenu() {
                 className="btn-primary"
                 onClick={() => navigate("/play")}
             >
-                Play as a guest
+                Play
             </Button>
 
-            <Button varient="primary" className="btn-primary">
+            {/* <Button varient="primary" className="btn-primary">
                 Login
-            </Button>
+            </Button> */}
         </section>
 
-        <section className="absolute z-20 bottom-3">
+        {/* <section className="absolute z-20 bottom-3">
             <p className="text-gray-50 text-[0.6rem] px-10 max-w-[1000px] text-center text-unselectable">
                 Playing as a guest will not save your progress.
                 <br />
@@ -37,7 +37,7 @@ export default function MainMenu() {
                 <br />
                 No data is being collected or shared.
             </p>
-        </section>
+        </section> */}
 
         <ModelViewer
             className="w-full h-full bg-gray-950"
@@ -50,9 +50,9 @@ export default function MainMenu() {
         >
             <Stars count={1000} />
             <GLBLodder
-                src="/glb/mars.glb"
+                src="/glb/moon.glb"
                 position={[0, 0, 0]}
-                scale={0.003}
+                scale={1}
                 autoRotateSpeed={[0, 0.1, 0]}
             />
         </ModelViewer>

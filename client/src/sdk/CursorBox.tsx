@@ -72,6 +72,7 @@ export default function CursorBox({ onPositionChange }: CursorBoxProps) {
         <GLBLodder
             src={selected.src}
             scale={selected.scale}
+            label={selected.name}
         />
     </group>
 }
