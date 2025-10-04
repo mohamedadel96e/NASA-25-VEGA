@@ -1,43 +1,55 @@
 import { OrbitControls, Stars } from "@react-three/drei";
 import ModelViewer from "../sdk/ModelViewer";
 import Plane from "../sdk/Plane";
-import { useState } from "react";
-import * as THREE from 'three';
-import type { ControlMode } from "../types/ControlMode";
+import { useEffect } from "react";
 import ControlBar from "../components/ControlBar";
 import CursorBox from "../sdk/CursorBox";
 import PositionDisplay from "../sdk/PositionDisplay";
 import IF from "../components/IF";
-import { useAtomValue } from "jotai";
-import { modelsArgs } from "../atoms";
+import { useAtom, useAtomValue } from "jotai";
+import { CursorPosition, Mode, modelsArgs, selectedModel } from "../atoms";
 import GLBLodder from "../sdk/GLBLodder";
-import { modelsData } from "../modelsData";
+import ModelsDisplay from "../components/ModelsDisplay";
 
 
 export default function PlayGround() {
 
-    const [cursorPosition, setCursorPosition] = useState(new THREE.Vector3());
-    const [mode, setMode] = useState<ControlMode>("hand");
     const models = useAtomValue(modelsArgs);
+    const selected = useAtomValue(selectedModel);
+    const [mode, setMode] = useAtom(Mode);
+    const [cursorPosition, setCursorPosition] = useAtom(CursorPosition);
+
+
+    useEffect(() => {
+
+        const escapeAdd = (e: KeyboardEvent) => {
+            if(e.key === "Escape") {
+                setMode("hand");
+            }
+        }
+        
+        addEventListener("keydown", escapeAdd);
+        return () => removeEventListener("keydown", escapeAdd);
+
+    }, [models]);
 
    
     return <main className="center w-screen h-[100dvh] relative">
 
-        <ControlBar
-            cursorPosition={cursorPosition}
-            setCursorPosition={setCursorPosition}
-            mode={mode}
-            setMode={setMode}
-        />
+        <ControlBar />
 
         <IF condition={mode === "add"}>
             <PositionDisplay position={cursorPosition} />
         </IF>
 
+        <IF condition={mode === "add" && !selected}>
+            <ModelsDisplay />
+        </IF>
+
         <ModelViewer
             className={`
                 w-full h-full bg-gray-950
-                ${mode === "add" ? "cursor-none" : mode === "select" ? "cursor-default" : "cursor-grab active:cursor-grabbing" }
+                ${mode === "add" && selected ? "cursor-none" : mode === "select" ? "cursor-default" : "cursor-grab active:cursor-grabbing" }
             `}
             environmentalLight="sunset"
             fov={30}
@@ -45,7 +57,7 @@ export default function PlayGround() {
             rotation={[1, 0, 0]}
         >
             <Stars count={1000} />
-            <IF condition={mode === "add"}>
+            <IF condition={mode === "add" && selected}>
                 <CursorBox onPositionChange={setCursorPosition} />
             </IF>
             <OrbitControls    
@@ -54,17 +66,17 @@ export default function PlayGround() {
                 maxPolarAngle={Math.PI / 2.1}
                 maxZoom={20}
                 minDistance={1}
-                maxDistance={10}
-                enablePan={false}
+                maxDistance={50}
+                // enablePan={false}
             />
             <Plane
                 texture="/textures/mars-square-no-ice.png"
-                height={50} width={50}
+                raduis={50}
             />
 
             { 
-                modelsData.length > 0 && 
-                modelsData.map((model, index) =>
+                models.length > 0 && 
+                models.map((model, index) =>
                     <GLBLodder
                         src={model.src}
                         position={model.position}

@@ -21,7 +21,7 @@ export default function MainMenu() {
                 className="btn-primary"
                 onClick={() => navigate("/play")}
             >
-                Play as a guest
+                Play
             </Button>
 
             <Button varient="primary" className="btn-primary">
